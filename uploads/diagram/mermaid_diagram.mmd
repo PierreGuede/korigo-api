@@ -1,0 +1,162 @@
+erDiagram
+
+ROLE {
+    uuid id PK
+    string nom
+    string description
+    datetime created_at
+}
+
+UTILISATEUR {
+    uuid id PK
+    string nom
+    string telephone
+    string email
+    string role
+    datetime created_at
+}
+
+CHAUFFEUR {
+    uuid id PK
+    uuid utilisateur_id FK
+    boolean actif
+    string statut
+    float note
+}
+
+VEHICULE {
+    uuid id PK
+    uuid chauffeur_id FK
+    string type
+    string marque
+    string modele
+    string immatriculation
+    string couleur
+}
+
+COURSE {
+    uuid id PK
+    uuid client_id FK
+    uuid chauffeur_id FK
+    uuid vehicule_id FK
+    float distance_km
+    float prix
+    string statut
+    datetime start_time
+    datetime end_time
+}
+
+TRAJET_GPS {
+    uuid id PK
+    uuid course_id FK
+    float latitude
+    float longitude
+    datetime timestamp
+}
+
+RESTAURANT {
+    uuid id PK
+    string nom
+    string adresse
+    string telephone
+}
+
+COMMANDE {
+    uuid id PK
+    uuid client_id FK
+    uuid restaurant_id FK
+    uuid chauffeur_id FK
+    float montant
+    string statut
+    datetime created_at
+}
+
+COLIS {
+    uuid id PK
+    uuid commande_id FK
+    string description
+    float poids
+}
+
+PAIEMENT {
+    uuid id PK
+    uuid utilisateur_id FK
+    uuid course_id FK
+    uuid commande_id FK
+    string mode
+    float montant
+    datetime created_at
+}
+
+WALLET_TRANSACTION {
+    uuid id PK
+    uuid utilisateur_id FK
+    string type
+    float montant
+    string description
+    datetime created_at
+}
+
+COMMISSION {
+    uuid id PK
+    uuid course_id FK
+    float montant
+    float pourcentage
+}
+
+RETRAIT {
+    uuid id PK
+    uuid chauffeur_id FK
+    float montant
+    string methode
+    string statut
+    datetime created_at
+}
+
+KYC_DOCUMENT {
+    uuid id PK
+    uuid chauffeur_id FK
+    string type_document
+    string statut
+    datetime created_at
+}
+
+PROMOTION {
+    uuid id PK
+    string code
+    float reduction
+    datetime date_debut
+    datetime date_fin
+}
+
+SUPPORT_TICKET {
+    uuid id PK
+    uuid utilisateur_id FK
+    string sujet
+    string message
+    string statut
+    datetime created_at
+}
+
+ZONE {
+    uuid id PK
+    string nom
+    string type
+}
+
+UTILISATEUR ||--o{ ROLE : est
+UTILISATEUR ||--o{ COURSE : demande
+UTILISATEUR ||--o{ COMMANDE : passe
+UTILISATEUR ||--o{ PAIEMENT : effectue
+UTILISATEUR ||--o{ WALLET_TRANSACTION : possede
+
+CHAUFFEUR ||--o{ VEHICULE : conduit
+CHAUFFEUR ||--o{ COURSE : realise
+CHAUFFEUR ||--o{ RETRAIT : demande
+CHAUFFEUR ||--o{ KYC_DOCUMENT : fournit
+
+COURSE ||--o{ TRAJET_GPS : contient
+COURSE ||--|| COMMISSION : genere
+
+RESTAURANT ||--o{ COMMANDE : recoit
+COMMANDE ||--o{ COLIS : contient
